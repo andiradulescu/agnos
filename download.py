@@ -68,3 +68,9 @@ if __name__ == "__main__":
   update = load_manifest(manifest)
   for partition in update:
     download_and_decompress(partition['url'], partition['hash'], f"{partition['name']}.img")
+
+  with open(f"reset_userdata.img", "wb") as fh:
+    reset_bytes ="COMMA_RESET".encode("utf-8")
+    remaining_length = 28 - len(reset_bytes)
+    null_bytes = b"\x00" * remaining_length
+    fh.write(reset_bytes + null_bytes)

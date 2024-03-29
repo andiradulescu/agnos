@@ -17,4 +17,6 @@
 
 *.xz
 *.img
-platform-tools/
+
+edl_repo
+edl_config.json
