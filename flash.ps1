@@ -7,7 +7,7 @@ if (Test-Path -path $EDL) {
     Invoke-Expression "cd edl"
     Invoke-Expression "git checkout 81d30c9039faf953881d38013ced01d1a06429db"
     Invoke-Expression "git submodule update --depth=1 --init --recursive"
-    Invoke-Expression "pip3 install requirements.txt"
+    Invoke-Expression "pip3 install -r requirements.txt"
     Invoke-Expression "cd .."
 }
 
