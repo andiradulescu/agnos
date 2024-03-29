@@ -1,12 +1,12 @@
 #!/bin/bash -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-EDL=$DIR/edl_repo/edl
+EDL=$DIR/edl/edl
 
 {
   if [[ ! -f  $EDL ]]; then
-    git clone https://github.com/bkerler/edl $DIR/edl_repo
-    cd $DIR/edl_repo
+    git clone https://github.com/bkerler/edl
+    cd $DIR/edl
     git fetch --all
     # TODO: git checkout
     git submodule update --depth=1 --init --recursive
@@ -24,7 +24,6 @@ EDL=$DIR/edl_repo/edl
 echo "Enter your computer password if prompted"
 
 CURRENT_SLOT="$($EDL getactiveslot 2>&1 | grep "Current active slot:" | cut -d ':' -f2- | sed 's/[[:blank:]]//g')"
-echo $CURRENT_SLOT
 BOOT_LUN=""
 if [ "$CURRENT_SLOT" == "a" ]; then
   NEW_SLOT="b"
@@ -55,6 +54,7 @@ flash xbl_$NEW_SLOT xbl.img
 flash xbl_config_$NEW_SLOT xbl_config.img
 flash abl_$NEW_SLOT abl.img
 flash boot_$NEW_SLOT boot.img
+# TODO: wait for merge
 #flash system_$NEWS_SLOT system.img
 
 echo "Setting slot $NEW_SLOT active..."
