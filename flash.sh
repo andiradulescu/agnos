@@ -16,14 +16,14 @@ if [[ ! -f  $EDL ]]; then
 
     cd $DIR
   } &> /dev/null
+fi
 
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "Installing libusb for macOS..."
-    {
-      brew install libusb git
-      ln -s /opt/homebrew/lib ~/lib
-    } &> /dev/null
-  fi
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  echo "Installing libusb for macOS..."
+  {
+    brew install libusb git
+    ln -s /opt/homebrew/lib ~/lib
+  } &> /dev/null
 fi
 
 
