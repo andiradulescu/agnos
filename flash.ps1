@@ -5,11 +5,14 @@ if (Test-Path -path $EDL) {
     Write-Host "Downloading and setting up EDL"
     Invoke-Expression "git clone https://github.com/bkerler/edl.git"
     Invoke-Expression "cd edl"
+    Invoke-Expression "git checkout 81d30c9039faf953881d38013ced01d1a06429db"
     Invoke-Expression "git submodule update --depth=1 --init --recursive"
     Invoke-Expression "pip3 install requirements.txt"
     Invoke-Expression "cd .."
 }
 
+
+Write-Host "Getting active slot..."
 $CURRENT_SLOT = (& $EDL getactiveslot 2>&1 | Select-String -Pattern "Current active slot:" | ForEach-Object { $_.ToString().Split(':')[1].Trim() })
 $BOOT_LUN = ""
 
@@ -26,16 +29,18 @@ else {
     exit 1
 }
 
+
 Write-Host "Current slot: $CURRENT_SLOT"
 Write-Host "Flashing slot: $NEW_SLOT"
+
+
+& $EDL e xbl_$CURRENT_SLOT --memory=ufs > $null
 
 function flash {
     param($arg1, $arg2)
     Write-Host "Writing to $arg1..."
-    & $EDL w $arg1 $arg2 --memory=ufs | Select-String -Pattern "Progress:"
+    & $EDL w $arg1 $arg2 --memory=ufs
 }
-
-& $EDL e xbl_$CURRENT_SLOT > $null
 
 flash aop_$NEW_SLOT aop.img
 flash devcfg_$NEW_SLOT devcfg.img
@@ -43,7 +48,8 @@ flash xbl_$NEW_SLOT xbl.img
 flash xbl_config_$NEW_SLOT xbl_config.img
 flash abl_$NEW_SLOT abl.img
 flash boot_$NEW_SLOT boot.img
-flash system_$NEWS_SLOT system.img
+flash system_$NEW_SLOT system.img
+
 
 Write-Host "Setting slot $NEW_SLOT active..."
 & $EDL setactiveslot $NEW_SLOT > $null
@@ -53,7 +59,8 @@ Write-Host "Setting slot $NEW_SLOT active..."
 # wipe device
 flash userdata reset_userdata.img
 Write-Host "Erasing cache..."
-& $EDL e cache | Select-String -Pattern "Progress:"
+& $EDL e cache --memory=ufs
+
 
 Write-Host "Reseting..."
 & $EDL reset > $null
