@@ -26,7 +26,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   } &> /dev/null
 fi
 
-
 echo "Getting active slot..."
 CURRENT_SLOT="$($EDL getactiveslot 2>&1 | grep "Current active slot:" | cut -d ':' -f2- | sed 's/[[:blank:]]//g')"
 BOOT_LUN=""
@@ -49,9 +48,6 @@ flash() {
   $EDL w $1 $2 --memory=ufs
 }
 
-
-$EDL e xbl_$CURRENT_SLOT --memory=ufs &> /dev/null
-
 # flash non-active slot
 flash aop_$NEW_SLOT aop.img
 flash devcfg_$NEW_SLOT devcfg.img
@@ -61,19 +57,16 @@ flash abl_$NEW_SLOT abl.img
 flash boot_$NEW_SLOT boot.img
 flash system_$NEW_SLOT system.img
 
-
 echo "Setting slot $NEW_SLOT active..."
 {
   $EDL setactiveslot $NEW_SLOT
   $EDL setbootablestoragedrive $BOOT_LUN
 } &> /dev/null
 
-
 # wipe device
 flash userdata reset_userdata.img
 echo "Erasing cache..."
 $EDL e cache --memory=ufs
-
 
 echo "Reseting..."
 $EDL reset &> /dev/null

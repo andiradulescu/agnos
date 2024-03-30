@@ -11,7 +11,6 @@ if (Test-Path -path $EDL) {
     Invoke-Expression "cd .."
 }
 
-
 Write-Host "Getting active slot..."
 $CURRENT_SLOT = (& $EDL getactiveslot 2>&1 | Select-String -Pattern "Current active slot:" | ForEach-Object { $_.ToString().Split(':')[1].Trim() })
 $BOOT_LUN = ""
@@ -29,12 +28,8 @@ else {
     exit 1
 }
 
-
 Write-Host "Current slot: $CURRENT_SLOT"
 Write-Host "Flashing slot: $NEW_SLOT"
-
-
-& $EDL e xbl_$CURRENT_SLOT --memory=ufs > $null
 
 function flash {
     param($arg1, $arg2)
@@ -50,17 +45,14 @@ flash abl_$NEW_SLOT abl.img
 flash boot_$NEW_SLOT boot.img
 flash system_$NEW_SLOT system.img
 
-
 Write-Host "Setting slot $NEW_SLOT active..."
 & $EDL setactiveslot $NEW_SLOT > $null
 & $EDL setbootablestoragedrive $BOOT_LUN > $null
-
 
 # wipe device
 flash userdata reset_userdata.img
 Write-Host "Erasing cache..."
 & $EDL e cache --memory=ufs
-
 
 Write-Host "Reseting..."
 & $EDL reset > $null
