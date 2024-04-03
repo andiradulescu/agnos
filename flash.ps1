@@ -31,6 +31,8 @@ else {
 Write-Host "Current slot: $CURRENT_SLOT"
 Write-Host "Flashing slot: $NEW_SLOT"
 
+& $EDL e "xbl_$CURRENT_SLOT" --memory=ufs
+
 function flash {
     param($arg1, $arg2)
     Write-Host "Writing to $arg1..."

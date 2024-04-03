@@ -43,6 +43,8 @@ fi
 echo "Current slot: $CURRENT_SLOT"
 echo "Flashing slot: $NEW_SLOT"
 
+$EDL e xbl_$CURRENT_SLOT --memory=ufs &> /dev/null
+
 flash() {
   echo "Writing to $1..."
   $EDL w $1 $2 --memory=ufs
