@@ -1,4 +1,7 @@
-$EDL = "edl/edl"
+$ErrorActionPreference = "Stop"
+
+$EDL = "python3 edl/edl"
+
 if (Test-Path -path $EDL) {
     Write-Host 'EDL tool found'
 } else {
@@ -31,7 +34,7 @@ else {
 Write-Host "Current slot: $CURRENT_SLOT"
 Write-Host "Flashing slot: $NEW_SLOT"
 
-& $EDL e "xbl_$CURRENT_SLOT" --memory=ufs
+& $EDL e "xbl_$CURRENT_SLOT" --memory=ufs &> /dev/null
 
 function flash {
     param($arg1, $arg2)
@@ -54,7 +57,7 @@ Write-Host "Setting slot $NEW_SLOT active..."
 # wipe device
 flash userdata reset_userdata.img
 Write-Host "Erasing cache..."
-& $EDL e cache --memory=ufs
+& $EDL e cache --memory=ufs &> /dev/null
 
 Write-Host "Reseting..."
 & $EDL reset > $null
