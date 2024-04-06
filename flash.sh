@@ -68,7 +68,7 @@ echo "Setting slot $NEW_SLOT active..."
 # wipe device
 flash userdata reset_userdata.img
 echo "Erasing cache..."
-$EDL e cache --memory=ufs
+$EDL e cache --memory=ufs &> /dev/null
 
 echo "Reseting..."
 $EDL reset &> /dev/null
