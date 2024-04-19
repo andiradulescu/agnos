@@ -43,11 +43,11 @@ fi
 echo "Current slot: $CURRENT_SLOT"
 echo "Flashing slot: $NEW_SLOT"
 
-$EDL e xbl_$CURRENT_SLOT &> /dev/null
+$EDL e xbl_$CURRENT_SLOT --memory=ufs &> /dev/null
 
 flash() {
   echo "Writing to $1..."
-  $EDL w $1 $2
+  $EDL w $1 $2 --memory=ufs
 }
 
 # flash non-active slot
@@ -68,7 +68,7 @@ echo "Setting slot $NEW_SLOT active..."
 # wipe device
 flash userdata reset_userdata.img
 echo "Erasing cache..."
-$EDL e cache &> /dev/null
+$EDL e cache --memory=ufs &> /dev/null
 
 echo "Reseting..."
 $EDL reset &> /dev/null
